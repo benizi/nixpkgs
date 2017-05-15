@@ -7220,6 +7220,7 @@ with pkgs;
   exiv2 = callPackage ../development/libraries/exiv2 { };
 
   expat = callPackage ../development/libraries/expat { };
+  expat1 = callPackage ../development/libraries/expat/v1.nix { };
 
   eventlog = callPackage ../development/libraries/eventlog { };
 
