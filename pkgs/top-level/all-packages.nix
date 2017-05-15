@@ -13527,6 +13527,10 @@ with pkgs;
 
   wavrsocvt = callPackage ../applications/misc/audio/wavrsocvt { };
 
+  wink = callPackage ../applications/video/wink {
+    stdenv = stdenv_32bit;
+  };
+
   wireshark-cli = callPackage ../applications/networking/sniffers/wireshark {
     withQt = false;
     withGtk = false;
