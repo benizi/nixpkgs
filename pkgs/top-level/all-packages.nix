@@ -470,6 +470,10 @@ with pkgs;
     gsl = gsl_1;
   };
 
+  aterms = callPackage ../development/tools/aterms {
+    inherit fetchFromGitHub;
+  };
+
   atomicparsley = callPackage ../tools/video/atomicparsley { };
 
   attic = callPackage ../tools/backup/attic {
