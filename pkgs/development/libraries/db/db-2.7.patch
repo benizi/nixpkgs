@@ -1,0 +1,84 @@
+diff --git a/dist/configure b/dist/configure
+index b0d32d2..8878515 100755
+--- a/dist/configure
++++ b/dist/configure
+@@ -1170,10 +1170,6 @@ else
+ fi
+ 
+ 
+-	if test "$GXX" = "yes"; then
+-		CXXFLAGS="-fhandle-exceptions $CXXFLAGS"
+-	fi
+-
+ 	LIBOBJS="$LIBOBJS \$(COBJS)"
+ fi
+ 
+diff --git a/dist/configure.in b/dist/configure.in
+index e54d6b4..17ba22f 100644
+--- a/dist/configure.in
++++ b/dist/configure.in
+@@ -89,10 +89,6 @@ AC_MSG_RESULT($db_cv_cxx)
+ if test "$db_cv_cxx" = "yes"; then
+ 	AC_PROG_CXX
+ 
+-	if test "$GXX" = "yes"; then
+-		CXXFLAGS="-fhandle-exceptions $CXXFLAGS"
+-	fi
+-
+ 	LIBOBJS="$LIBOBJS \$(COBJS)"
+ fi
+ 
+diff --git a/Makefile.in b/Makefile.in
+index 87d5f1b..b64914c 100644
+--- a/dist/Makefile.in
++++ b/dist/Makefile.in
+@@ -1,7 +1,7 @@
+ # @(#)Makefile.in	10.62 (Sleepycat) 12/7/98
+ 
+ srcdir=	@srcdir@/..
+-CPPFLAGS=-I. -I$(srcdir)/include @CPPFLAGS@
++CPPFLAGS=-I. -I$(srcdir)/include -fPIC @CPPFLAGS@
+ CFLAGS=	-c @CFLAGS@ $(CPPFLAGS)
+ CC=	@CC@
+ CXXFLAGS=-c @CXXFLAGS@ $(CPPFLAGS)
+@@ -43,8 +43,12 @@ PROGS=	@build_additional@ db_archive db_checkpoint db_deadlock \
+ LOBJS=	@LIBOBJS@
+ POBJS=	err.o getlong.o
+ 
++libdbso=	libdb.so.2
+ libdb=	libdb.a
+-all: $(libdb) $(PROGS)
++all: $(libdbso) $(libdb) $(PROGS)
++
++$(libdbso): db.h $(OBJS) $(LOBJS)
++	$(CC) -o $@ $(LDFLAGS) -shared -Wl,-soname,$@ $(OBJS) $(LOBJS)
+ 
+ $(libdb): db.h $(OBJS) $(LOBJS)
+ 	$(rm) -f $@
+@@ -141,11 +145,11 @@ realclean distclean: clean
+ 	$(rm) -f confdefs.h db.h db_int.h db_185.h include.tcl
+ 
+ prefix=	@prefix@
+-bindir=	$(prefix)/BerkeleyDB/bin
+-datadir=$(prefix)/BerkeleyDB/share
+-includedir=$(prefix)/BerkeleyDB/include
+-libdir=	$(prefix)/BerkeleyDB/lib
+-mandir=	$(prefix)/BerkeleyDB/docs
++bindir=	$(prefix)/bin
++datadir=$(prefix)/share
++includedir=$(prefix)/include
++libdir=	$(prefix)/lib
++mandir=	$(prefix)/docs
+ 
+ dmode=	755
+ emode=	555
+@@ -170,6 +174,9 @@ install: all
+ 	@cd $(libdir) && $(rm) -f $(libdb)
+ 	@$(cp) -p $(libdb) $(libdir)
+ 	@cd $(libdir) && $(chmod) $(fmode) $(libdb)
++	@cd $(libdir) && $(rm) -f $(libdbso)
++	@$(cp) -p $(libdbso) $(libdir)
++	@cd $(libdir) && $(chmod) $(fmode) $(libdbso)
+ 	@echo "Installing DB utilities: $(bindir) ..."
+ 	@test -d $(bindir) || \
+ 	    ($(mkdir) -p $(bindir) && $(chmod) $(dmode) $(bindir))

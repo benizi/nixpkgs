@@ -7146,6 +7146,8 @@ with pkgs;
   # Make bdb5 the default as it is the last release under the custom
   # bsd-like license
   db = db5;
+  db2 = callPackage ../development/libraries/db/db-2.7.nix { };
+  db2_32bit = callPackage_i686 ../development/libraries/db/db-2.7.nix { };
   db4 = db48;
   db48 = callPackage ../development/libraries/db/db-4.8.nix { };
   db5 = db53;

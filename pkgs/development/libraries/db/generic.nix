@@ -7,7 +7,7 @@
 , version, sha256
 , patchSrc ? "src", extraPatches ? [ ]
 , license ? stdenv.lib.licenses.sleepycat
-, drvArgs ? {}
+, drvArgs ? { inherit cxxSupport; } # TODO: old, old C++
 }:
 
 stdenv.mkDerivation (rec {
